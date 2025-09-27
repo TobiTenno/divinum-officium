@@ -115,9 +115,11 @@ sub resolve_refs {
     #red prefix
     if ($line =~ /^(R\.br\.|R\.|V\.|Ant\.|Benedictio\.|Absolutio\.|Responsorium\.)(.*)/) {
       my $h = setvrbar($1);
+      my $pH = setvrbar($1);
       my $l = $2;
 
       $h =~ s/(Benedictio|Absolutio)/ translate($1, $lang) /e;
+      $h = '{{' . $h . '}}' if $pH =~ /(Benedictio|Absolutio)/;
       $line = setfont($redfont, $h) . $l;
     }
 
@@ -161,7 +163,7 @@ sub resolve_refs {
 
     # rubrics - small red
     $line =~ s{«\s?(.*?)\s?»}{"<span class=\'nigra\'>$1</span>"}eg if $line =~ m{/:.*«.*».*:/};
-    $line =~ s{/:(.*?):/}{setfont($smallfont, $1)}eg;
+    $line =~ s{/:(.*?):/}{setfont($smallfont, "{{$1}}")}eg;
 
     # italic for mute vovels in hymns
     $line =~ s/\[([æaeiou]m?)\]/setfont('italic', $1)/eg;
